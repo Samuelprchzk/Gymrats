@@ -242,7 +242,9 @@
         </div>
     </div>
 
+    <!-- CHART.JS + DATE ADAPTER (opravuje graf) -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
 
     <script>
 
@@ -437,10 +439,9 @@
                 return {
                     label: ex,
                     data: prRecords.filter(r=>r.exercise===ex).map(r=>({x:r.date, y:r.oneRM})),
-                    borderColor: 'white',
-                    backgroundColor: 'rgba(255,255,255,0.2)',
+                    borderColor: '#' + Math.floor(Math.random()*16777215).toString(16),
                     fill:false,
-                    tension:0
+                    tension:0.2
                 };
             });
 
