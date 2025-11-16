@@ -1,476 +1,339 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sk">
 <head>
-    <meta charset="UTF-8">
-    <title>GymRat PR</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-image: url('https://raw.githubusercontent.com/Samuelprchzk/Gymrats/main/cvicenie.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            color: white;
-            padding: 20px;
-            max-width: 700px;
-            margin: auto;
-        }
-
-        h1 {
-            text-align: center;
-            text-shadow: 2px 2px 4px #000;
-        }
-
-        /* MENU V ĽAVOM HORNOM ROHU */
-        .menu {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-        }
-
-        .menu-button {
-            font-size: 30px;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .menu-content {
-            display: none;
-            position: absolute;
-            background-color: rgba(0,0,0,0.7);
-            min-width: 160px;
-            border-radius: 5px;
-            overflow: hidden;
-            z-index: 1;
-        }
-
-        .menu-content a {
-            color: white;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-        }
-
-        .menu-content a:hover {
-            background-color: rgba(255,255,255,0.2);
-        }
-
-        .form-group {
-            margin-bottom: 10px;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 8px;
-            border-radius: 8px;
-            border: none;
-            margin-top: 5px;
-            background-color: rgba(200,200,200,0.4);
-            color: black;
-            text-shadow: 1px 1px 2px white;
-        }
-
-        button {
-            padding: 8px 15px;
-            border: none;
-            border-radius: 5px;
-            background-color: #3498db;
-            color: white;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #2980b9;
-        }
-
-        .entry-list {
-            margin-top: 20px;
-            background-color: rgba(50,50,50,0.3);
-            padding: 10px;
-            border-radius: 5px;
-        }
-
-        .pr-entry {
-            margin-bottom: 5px;
-            text-shadow: 1px 1px 2px black;
-            background-color: rgba(50,50,50,0.3);
-            padding: 5px;
-            border-radius: 5px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .delete-btn {
-            cursor: pointer;
-            color: red;
-            font-weight: bold;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        th, td {
-            width: 14.28%;
-            text-align: center;
-            padding: 10px;
-            border: 1px solid rgba(255,255,255,0.3);
-            cursor: pointer;
-            vertical-align: top;
-        }
-
-        th {
-            background-color: rgba(0,0,0,0.6);
-        }
-
-        td {
-            background-color: rgba(0,0,0,0.4);
-        }
-
-        td:hover {
-            background-color: rgba(0,0,0,0.7);
-        }
-
-        .pr-calendar-entry {
-            font-size: 12px;
-            color: #ffd700;
-        }
-
-        .calendar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 10;
-            padding-top: 100px;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.8);
-        }
-
-        .modal-content {
-            margin: auto;
-            padding: 20px;
-            background-color: #222;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 600px;
-            color: white;
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            cursor: pointer;
-        }
-
-        .close:hover {
-            color: white;
-        }
-
-    </style>
+<meta charset="UTF-8">
+<title>GymRat PR</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-image: url('https://raw.githubusercontent.com/Samuelprchzk/Gymrats/main/cvicenie.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: white;
+    padding: 20px;
+    max-width: 700px;
+    margin: auto;
+}
+h1 {
+    text-align: center;
+    text-shadow: 2px 2px 4px #000;
+}
+/* Menu vľavo hore */
+.menu {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+.menu-button {
+    font-size: 30px;
+    cursor: pointer;
+    user-select: none;
+}
+.menu-content {
+    display: none;
+    position: absolute;
+    background-color: rgba(0,0,0,0.7);
+    min-width: 160px;
+    border-radius: 5px;
+    overflow: hidden;
+    z-index: 1;
+}
+.menu-content a {
+    color: white;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+.menu-content a:hover {
+    background-color: rgba(255,255,255,0.2);
+}
+.form-group {
+    margin-bottom: 10px;
+}
+input, select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 8px;
+    border: none;
+    margin-top: 5px;
+    background-color: rgba(200,200,200,0.4);
+    color: black;
+    text-shadow: 1px 1px 2px white;
+}
+button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: #3498db;
+    color: white;
+    cursor: pointer;
+}
+button:hover {
+    background-color: #2980b9;
+}
+.entry-list {
+    margin-top: 20px;
+    background-color: rgba(50,50,50,0.3);
+    padding: 10px;
+    border-radius: 5px;
+}
+.pr-entry {
+    margin-bottom: 5px;
+    text-shadow: 1px 1px 2px black;
+    background-color: rgba(50,50,50,0.3);
+    padding: 5px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.delete-btn {
+    cursor: pointer;
+    color: red;
+    font-weight: bold;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+th, td {
+    width: 14.28%;
+    text-align: center;
+    padding: 10px;
+    border: 1px solid rgba(255,255,255,0.3);
+    cursor: pointer;
+    vertical-align: top;
+}
+th {background-color: rgba(0,0,0,0.6);}
+td {background-color: rgba(0,0,0,0.4);}
+td:hover {background-color: rgba(0,0,0,0.7);}
+.pr-calendar-entry {font-size: 12px; color: #ffd700;}
+.calendar-header {display: flex; justify-content: space-between; align-items: center;}
+/* Graph page */
+#graph {display:none; margin-top:50px;}
+#exerciseGraphSelect {margin-bottom:10px; width:100%; padding:8px; border-radius:8px; border:none;}
+</style>
 </head>
 <body>
-    <h1>GymRat PR</h1>
+<h1>GymRat PR</h1>
 
-    <div class="menu">
-        <span class="menu-button" onclick="toggleMenu()">&#8942;</span>
-        <div class="menu-content" id="myMenu">
-            <a href="#" onclick="showPage('home')">Home</a>
-            <a href="#" onclick="showPage('calendar')">PR Calendar</a>
-            <a href="#" onclick="showGraph()">Graph</a>
-        </div>
+<div class="menu">
+    <span class="menu-button" onclick="toggleMenu()">&#8942;</span>
+    <div class="menu-content" id="myMenu">
+        <a href="#" onclick="showPage('home')">Home</a>
+        <a href="#" onclick="showPage('calendar')">PR Calendar</a>
+        <a href="#" onclick="showPage('graph')">Graph</a>
     </div>
+</div>
 
-    <div id="home">
-        <div class="form-group">
-            <label>New Exercise Name:</label>
-            <input type="text" id="newExercise">
-            <button onclick="createExercise()">Create Exercise</button>
-        </div>
-
-        <div class="form-group">
-            <label>Select Exercise:</label>
-            <select id="exerciseSelect"></select>
-        </div>
-
-        <div class="form-group">
-            <label>Weight (kg):</label>
-            <input type="number" id="weight">
-        </div>
-
-        <div class="form-group">
-            <label>Repetitions:</label>
-            <input type="number" id="reps">
-        </div>
-
-        <div class="form-group">
-            <label>Date:</label>
-            <input type="date" id="date">
-        </div>
-
-        <button onclick="savePR()">Save PR</button>
-
-        <div class="entry-list" id="entryList"></div>
+<div id="home">
+    <div class="form-group">
+        <label>New Exercise Name:</label>
+        <input type="text" id="newExercise">
+        <button onclick="createExercise()">Create Exercise</button>
     </div>
-
-    <div id="calendar" style="display:none;">
-        <div class="calendar-header">
-            <button onclick="prevMonth()">◀</button>
-            <h2 id="monthYear"></h2>
-            <button onclick="nextMonth()">▶</button>
-        </div>
-        <table id="calendarTable"></table>
+    <div class="form-group">
+        <label>Select Exercise:</label>
+        <select id="exerciseSelect"></select>
     </div>
-
-    <div id="graphModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeGraph()">&times;</span>
-            <h2>PR Graph</h2>
-            <canvas id="prChart" width="500" height="300"></canvas>
-        </div>
+    <div class="form-group">
+        <label>Weight (kg):</label>
+        <input type="number" id="weight">
     </div>
+    <div class="form-group">
+        <label>Repetitions:</label>
+        <input type="number" id="reps">
+    </div>
+    <div class="form-group">
+        <label>Date:</label>
+        <input type="date" id="date">
+    </div>
+    <button onclick="savePR()">Save PR</button>
 
-    <!-- CHART.JS + DATE ADAPTER (opravuje graf) -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+    <div class="entry-list" id="entryList"></div>
+</div>
 
-    <script>
+<div id="calendar" style="display:none;">
+    <div class="calendar-header">
+        <button onclick="prevMonth()">◀</button>
+        <h2 id="monthYear"></h2>
+        <button onclick="nextMonth()">▶</button>
+    </div>
+    <table id="calendarTable"></table>
+</div>
 
-        function toggleMenu() {
-            const menu = document.getElementById("myMenu");
-            menu.style.display = (menu.style.display === "block") ? "none" : "block";
-        }
+<div id="graph">
+    <select id="exerciseGraphSelect" onchange="updateGraph()"></select>
+    <canvas id="prChart" width="600" height="300"></canvas>
+</div>
 
-        function showPage(page) {
-            document.getElementById("home").style.display = (page === "home") ? "block" : "none";
-            document.getElementById("calendar").style.display = (page === "calendar") ? "block" : "none";
-            document.getElementById("myMenu").style.display = "none";
-            if(page === "calendar") {
-                generateCalendar(currentMonth, currentYear);
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+
+<script>
+// Menu toggle
+function toggleMenu() {
+    const menu = document.getElementById("myMenu");
+    menu.style.display = (menu.style.display === "block") ? "none" : "block";
+}
+function showPage(page){
+    document.getElementById("home").style.display = (page==='home')?'block':'none';
+    document.getElementById("calendar").style.display = (page==='calendar')?'block':'none';
+    document.getElementById("graph").style.display = (page==='graph')?'block':'none';
+    document.getElementById("myMenu").style.display = "none";
+    if(page==='calendar') generateCalendar(currentMonth,currentYear);
+    if(page==='graph') setTimeout(updateGraph,50);
+}
+
+// Exercises
+function loadExercises() {
+    let exercises = JSON.parse(localStorage.getItem("exercises") || "[]");
+    if(exercises.length===0){
+        exercises = ["SQUAT","BENCH PRESS","DEADLIFT"];
+        localStorage.setItem("exercises", JSON.stringify(exercises));
+    }
+    const select = document.getElementById("exerciseSelect");
+    select.innerHTML = "";
+    exercises.forEach(e => {
+        let option = document.createElement("option");
+        option.value = e; option.textContent = e; option.style.color="black";
+        select.appendChild(option);
+    });
+    // Graph select
+    const gselect = document.getElementById("exerciseGraphSelect");
+    gselect.innerHTML="";
+    exercises.forEach(e => {
+        let option = document.createElement("option");
+        option.value=e; option.textContent=e;
+        gselect.appendChild(option);
+    });
+}
+
+function createExercise() {
+    const newExercise = document.getElementById("newExercise").value.trim();
+    if(!newExercise) return;
+    let exercises = JSON.parse(localStorage.getItem("exercises") || "[]");
+    if(!exercises.includes(newExercise)) exercises.push(newExercise);
+    localStorage.setItem("exercises", JSON.stringify(exercises));
+    document.getElementById("newExercise").value="";
+    loadExercises();
+}
+
+// Save PR
+function calculate1RM(weight,reps){return Math.round(weight*(1+reps/30));}
+
+function savePR() {
+    const weight = parseFloat(document.getElementById("weight").value);
+    const date = document.getElementById("date").value;
+    const reps = parseInt(document.getElementById("reps").value);
+    const exercise = document.getElementById("exerciseSelect").value;
+    if(!weight||!date||!exercise||!reps){alert("Fill all fields!");return;}
+    let prRecords = JSON.parse(localStorage.getItem("prRecords") || "[]");
+    prRecords.push({weight,reps,date,exercise});
+    localStorage.setItem("prRecords", JSON.stringify(prRecords));
+    document.getElementById("weight").value="";
+    document.getElementById("date").value="";
+    document.getElementById("reps").value="";
+    showPRList();
+}
+
+function showPRList() {
+    const listDiv=document.getElementById("entryList");
+    listDiv.innerHTML="";
+    const prRecords=JSON.parse(localStorage.getItem("prRecords") || "[]");
+    prRecords.forEach((r,i)=>{
+        const div=document.createElement("div");
+        div.className="pr-entry";
+        div.innerHTML=`<span>${r.date} - ${r.exercise} - ${r.weight}kg x${r.reps} (1RM: ${calculate1RM(r.weight,r.reps)}kg)</span>
+        <span class="delete-btn" onclick="deletePR(${i})">&#128465;</span>`;
+        listDiv.appendChild(div);
+    });
+}
+
+function deletePR(index){
+    let prRecords=JSON.parse(localStorage.getItem("prRecords")||"[]");
+    prRecords.splice(index,1);
+    localStorage.setItem("prRecords",JSON.stringify(prRecords));
+    showPRList();
+}
+
+loadExercises(); showPRList();
+
+// Calendar
+const calendarTable=document.getElementById("calendarTable");
+const monthYear=document.getElementById("monthYear");
+const today=new Date();
+let currentMonth=today.getMonth(), currentYear=today.getFullYear();
+const months=["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+function generateCalendar(month,year){
+    calendarTable.innerHTML="";
+    monthYear.textContent=months[month]+" "+year;
+    const firstDay=new Date(year,month,1).getDay();
+    const daysInMonth=new Date(year,month+1,0).getDate();
+    let date=1;
+    const daysOfWeek=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+    let headerRow=document.createElement("tr");
+    daysOfWeek.forEach(d=>{let th=document.createElement("th"); th.textContent=d; headerRow.appendChild(th);});
+    calendarTable.appendChild(headerRow);
+    const prRecords=JSON.parse(localStorage.getItem("prRecords")||"[]");
+    for(let i=0;i<6;i++){
+        let row=document.createElement("tr");
+        for(let j=0;j<7;j++){
+            let cell=document.createElement("td");
+            if(i===0 && j<firstDay){cell.textContent="";}
+            else if(date>daysInMonth){cell.textContent="";}
+            else{
+                cell.textContent=date;
+                const dayStr=`${year}-${(month+1).toString().padStart(2,'0')}-${date.toString().padStart(2,'0')}`;
+                prRecords.filter(r=>r.date===dayStr).forEach(r=>{
+                    const div=document.createElement("div");
+                    div.className="pr-calendar-entry";
+                    div.textContent=`${r.exercise}: ${r.weight}kg x${r.reps} (1RM: ${calculate1RM(r.weight,r.reps)}kg)`;
+                    cell.appendChild(div);
+                });
+                date++;
             }
+            row.appendChild(cell);
         }
+        calendarTable.appendChild(row);
+    }
+}
+function prevMonth(){currentMonth--; if(currentMonth<0){currentMonth=11; currentYear--;} generateCalendar(currentMonth,currentYear);}
+function nextMonth(){currentMonth++; if(currentMonth>11){currentMonth=0; currentYear++;} generateCalendar(currentMonth,currentYear);}
 
-        /* DEFAULT CVIKY */
-        function loadExercises() {
-            const defaultExercises = ["SQUAT", "BENCH PRESS", "DEADLIFT"];
-
-            let exercises = JSON.parse(localStorage.getItem("exercises") || "[]");
-
-            defaultExercises.forEach(ex => {
-                if (!exercises.includes(ex)) exercises.push(ex);
-            });
-
-            localStorage.setItem("exercises", JSON.stringify(exercises));
-
-            const select = document.getElementById("exerciseSelect");
-            select.innerHTML = "";
-
-            exercises.forEach(e => {
-                let option = document.createElement("option");
-                option.value = e;
-                option.textContent = e;
-                option.style.color = "black";
-                select.appendChild(option);
-            });
+// Graph
+let chartInstance=null;
+function updateGraph(){
+    const ctx=document.getElementById("prChart").getContext("2d");
+    const exercise=document.getElementById("exerciseGraphSelect").value;
+    const prRecords=JSON.parse(localStorage.getItem("prRecords")||"[]")
+        .filter(r=>r.exercise===exercise)
+        .map(r=>({x:r.date, y:calculate1RM(r.weight,r.reps)}))
+        .sort((a,b)=>new Date(a.x)-new Date(b.x));
+    if(chartInstance) chartInstance.destroy();
+    chartInstance=new Chart(ctx,{
+        type:'line',
+        data:{datasets:[{
+            label:exercise+" 1RM",
+            data:prRecords,
+            borderColor:'white',
+            backgroundColor:'rgba(255,255,255,0.2)',
+            fill:false,
+            tension:0
+        }]},
+        options:{
+            parsing:{xAxisKey:'x',yAxisKey:'y'},
+            scales:{
+                x:{type:'time', time:{unit:'day'}, ticks:{color:'white'}},
+                y:{ticks:{color:'white'}}
+            },
+            plugins:{legend:{labels:{color:'white'}}}
         }
-
-        function createExercise() {
-            const newExercise = document.getElementById("newExercise").value.trim();
-            if(!newExercise) return;
-
-            let exercises = JSON.parse(localStorage.getItem("exercises") || "[]");
-
-            if(!exercises.includes(newExercise)) {
-                exercises.push(newExercise);
-                localStorage.setItem("exercises", JSON.stringify(exercises));
-                document.getElementById("newExercise").value = "";
-                loadExercises();
-            }
-        }
-
-        /* AUTOMATICKÝ VÝPOČET 1RM */
-        function calculate1RM(weight, reps) {
-            return Math.round(weight * (1 + reps / 30) * 10) / 10;
-        }
-
-        function savePR() {
-            const weight = Number(document.getElementById("weight").value);
-            const date = document.getElementById("date").value;
-            const reps = Number(document.getElementById("reps").value);
-            const exercise = document.getElementById("exerciseSelect").value;
-
-            if(!weight || !date || !exercise || !reps) {
-                alert("Fill all fields!");
-                return;
-            }
-
-            const oneRM = calculate1RM(weight, reps);
-
-            let prRecords = JSON.parse(localStorage.getItem("prRecords") || "[]");
-            prRecords.push({weight, date, exercise, reps, oneRM});
-            localStorage.setItem("prRecords", JSON.stringify(prRecords));
-
-            document.getElementById("weight").value = "";
-            document.getElementById("date").value = "";
-            document.getElementById("reps").value = "";
-
-            showPRList();
-        }
-
-        function showPRList() {
-            const listDiv = document.getElementById("entryList");
-            listDiv.innerHTML = "";
-            const prRecords = JSON.parse(localStorage.getItem("prRecords") || "[]");
-
-            prRecords.forEach((r,index) => {
-                const div = document.createElement("div");
-                div.className = "pr-entry";
-                div.innerHTML = `<span>${r.date} - ${r.exercise} - ${r.weight}kg x${r.reps} (1RM: ${r.oneRM}kg)</span>
-                                 <span class="delete-btn" onclick="deletePR(${index})">&#128465;</span>`;
-                listDiv.appendChild(div);
-            });
-        }
-
-        function deletePR(index) {
-            let prRecords = JSON.parse(localStorage.getItem("prRecords") || "[]");
-            prRecords.splice(index,1);
-            localStorage.setItem("prRecords", JSON.stringify(prRecords));
-            showPRList();
-        }
-
-        loadExercises();
-        showPRList();
-
-        const calendarTable = document.getElementById("calendarTable");
-        const monthYear = document.getElementById("monthYear");
-        const today = new Date();
-        let currentMonth = today.getMonth();
-        let currentYear = today.getFullYear();
-
-        const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-
-        function generateCalendar(month, year) {
-            calendarTable.innerHTML = "";
-            monthYear.textContent = months[month] + " " + year;
-
-            const firstDay = new Date(year, month, 1).getDay();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-            let date = 1;
-            const daysOfWeek = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-            let headerRow = document.createElement("tr");
-
-            daysOfWeek.forEach(d => {
-                let th = document.createElement("th");
-                th.textContent = d;
-                headerRow.appendChild(th);
-            });
-            calendarTable.appendChild(headerRow);
-
-            const prRecords = JSON.parse(localStorage.getItem("prRecords") || "[]");
-
-            for(let i=0;i<6;i++){
-                let row = document.createElement("tr");
-                for(let j=0;j<7;j++){
-                    let cell = document.createElement("td");
-
-                    if(i===0 && j<firstDay){
-                        cell.textContent = "";
-                    } else if(date>daysInMonth){
-                        cell.textContent = "";
-                    } else {
-                        cell.textContent = date;
-
-                        const dayStr = `${year}-${(month+1).toString().padStart(2,'0')}-${date.toString().padStart(2,'0')}`;
-
-                        prRecords.filter(r=>r.date===dayStr).forEach(r=>{
-                            const div = document.createElement("div");
-                            div.className = "pr-calendar-entry";
-                            div.textContent = `${r.exercise}: ${r.weight}kg x${r.reps} (1RM: ${r.oneRM})`;
-                            cell.appendChild(div);
-                        });
-
-                        date++;
-                    }
-                    row.appendChild(cell);
-                }
-                calendarTable.appendChild(row);
-            }
-        }
-
-        function prevMonth() {
-            currentMonth--;
-            if(currentMonth<0){
-                currentMonth=11;
-                currentYear--;
-            }
-            generateCalendar(currentMonth,currentYear);
-        }
-
-        function nextMonth() {
-            currentMonth++;
-            if(currentMonth>11){
-                currentMonth=0;
-                currentYear++;
-            }
-            generateCalendar(currentMonth,currentYear);
-        }
-
-        function showGraph() {
-            document.getElementById("graphModal").style.display="block";
-            const ctx = document.getElementById('prChart').getContext('2d');
-            const prRecords = JSON.parse(localStorage.getItem("prRecords") || "[]");
-
-            const exercises = [...new Set(prRecords.map(r=>r.exercise))];
-
-            const datasets = exercises.map(ex=>{
-                return {
-                    label: ex,
-                    data: prRecords.filter(r=>r.exercise===ex).map(r=>({x:r.date, y:r.oneRM})),
-                    borderColor: '#' + Math.floor(Math.random()*16777215).toString(16),
-                    fill:false,
-                    tension:0.2
-                };
-            });
-
-            if(window.chartInstance) window.chartInstance.destroy();
-
-            window.chartInstance = new Chart(ctx,{
-                type:'line',
-                data:{ datasets: datasets },
-                options:{
-                    parsing:{ xAxisKey:'x', yAxisKey:'y' },
-                    scales:{
-                        x:{
-                            type:'time',
-                            time:{unit:'day'},
-                            ticks:{color:'white'}
-                        },
-                        y:{ticks:{color:'white'}}
-                    },
-                    plugins:{
-                        legend:{labels:{color:'white'}}
-                    }
-                }
-            });
-        }
-
-        function closeGraph() {
-            document.getElementById("graphModal").style.display="none";
-        }
-
-    </script>
+    });
+}
+</script>
 </body>
 </html>
