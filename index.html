@@ -6,7 +6,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-image: url('cvicenie.jpg');
+            background-image: url('https://raw.githubusercontent.com/Samuelprchzk/Gymrats/main/cvicenie.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -37,7 +37,7 @@
             display: none;
             position: absolute;
             background-color: rgba(0,0,0,0.7);
-            min-width: 200px;
+            min-width: 160px;
             border-radius: 5px;
             overflow: hidden;
             z-index: 1;
@@ -66,7 +66,7 @@
             margin-top: 5px;
             background-color: rgba(200,200,200,0.4);
             color: black;
-            text-shadow: 1px 1px 2px black;
+            text-shadow: 1px 1px 2px white;
         }
 
         button {
@@ -104,13 +104,6 @@
             cursor: pointer;
             color: red;
             font-weight: bold;
-            margin-left: 10px;
-        }
-
-        .calendar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
 
         table {
@@ -124,6 +117,7 @@
             text-align: center;
             padding: 10px;
             border: 1px solid rgba(255,255,255,0.3);
+            cursor: pointer;
             vertical-align: top;
         }
 
@@ -133,7 +127,6 @@
 
         td {
             background-color: rgba(0,0,0,0.4);
-            cursor: pointer;
         }
 
         td:hover {
@@ -145,342 +138,319 @@
             color: #ffd700;
         }
 
-        canvas {
-            background-color: rgba(0,0,0,0.6);
-            border-radius: 5px;
-            display: block;
-            margin-top: 10px;
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        select.exercise-select {
-            color: black;
-            font-weight: bold;
+        /* Graf modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10;
+            padding-top: 100px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
         }
+
+        .modal-content {
+            margin: auto;
+            padding: 20px;
+            background-color: #222;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            color: white;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: white;
+        }
+
     </style>
 </head>
 <body>
-<h1>GymRat PR</h1>
+    <h1>GymRat PR</h1>
 
-<div class="menu">
-    <span class="menu-button" onclick="toggleMenu()">&#8942;</span>
-    <div class="menu-content" id="myMenu">
-        <a href="#" onclick="showPage('home')">Home</a>
-        <a href="#" onclick="showPage('calendar')">Calendar</a>
-        <a href="#" onclick="showPage('graph')">Graphs</a>
+    <div class="menu">
+        <span class="menu-button" onclick="toggleMenu()">&#8942;</span>
+        <div class="menu-content" id="myMenu">
+            <a href="#" onclick="showPage('home')">Home</a>
+            <a href="#" onclick="showPage('calendar')">PR Calendar</a>
+            <a href="#" onclick="showGraph()">Graph</a>
+        </div>
     </div>
-</div>
 
-<!-- Hlavná stránka -->
-<div id="home">
-    <div class="form-group">
-        <label>Exercise:</label>
-        <select id="exerciseSelect" class="exercise-select"></select>
+    <div id="home">
+        <div class="form-group">
+            <label>New Exercise Name:</label>
+            <input type="text" id="newExercise">
+            <button onclick="createExercise()">Create Exercise</button>
+        </div>
+
+        <div class="form-group">
+            <label>Select Exercise:</label>
+            <select id="exerciseSelect"></select>
+        </div>
+
+        <div class="form-group">
+            <label>Weight (kg):</label>
+            <input type="number" id="weight">
+        </div>
+
+        <div class="form-group">
+            <label>Repetitions:</label>
+            <input type="number" id="reps">
+        </div>
+
+        <div class="form-group">
+            <label>Date:</label>
+            <input type="date" id="date">
+        </div>
+
+        <button onclick="savePR()">Save PR</button>
+
+        <div class="entry-list" id="entryList"></div>
     </div>
-    <div class="form-group">
-        <label>Weight (kg):</label>
-        <input type="number" id="weight">
+
+    <div id="calendar" style="display:none;">
+        <div class="calendar-header">
+            <button onclick="prevMonth()">◀</button>
+            <h2 id="monthYear"></h2>
+            <button onclick="nextMonth()">▶</button>
+        </div>
+        <table id="calendarTable"></table>
     </div>
-    <div class="form-group">
-        <label>Reps:</label>
-        <input type="number" id="reps">
+
+    <!-- Graph Modal -->
+    <div id="graphModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeGraph()">&times;</span>
+            <h2>PR Graph</h2>
+            <canvas id="prChart" width="500" height="300"></canvas>
+        </div>
     </div>
-    <div class="form-group">
-        <label>Date:</label>
-        <input type="date" id="date">
-    </div>
-    <button onclick="savePR()">Save PR</button>
-    <button onclick="createNewExercise()">Create New Exercise</button>
 
-    <div class="entry-list" id="entryList"></div>
-</div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<!-- Kalendár -->
-<div id="calendar" style="display:none;">
-    <div class="calendar-header">
-        <button onclick="prevMonth()">◀</button>
-        <h2 id="monthYear"></h2>
-        <button onclick="nextMonth()">▶</button>
-    </div>
-    <table id="calendarTable"></table>
-</div>
-
-<!-- Grafy -->
-<div id="graph" style="display:none;">
-    <div class="form-group">
-        <label>Select Exercise:</label>
-        <select id="graphSelect" class="exercise-select" onchange="drawGraph()"></select>
-    </div>
-    <canvas id="prGraph" width="600" height="300"></canvas>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    let exercises = JSON.parse(localStorage.getItem("exercises")||'["Deadlift","Squat","Bench Press"]');
-
-    function toggleMenu(){
-        const menu = document.getElementById("myMenu");
-        menu.style.display = menu.style.display==="block"?"none":"block";
-    }
-
-    function showPage(page){
-        document.getElementById("home").style.display = page==="home"?"block":"none";
-        document.getElementById("calendar").style.display = page==="calendar"?"block":"none";
-        document.getElementById("graph").style.display = page==="graph"?"block":"none";
-        document.getElementById("myMenu").style.display = "none";
-        if(page==="calendar") generateCalendar(currentMonth,currentYear);
-        if(page==="home") refreshExerciseSelect();
-        if(page==="graph") refreshGraphSelect();
-    }
-
-    function createNewExercise(){
-        const name = prompt("Enter new exercise name:");
-        if(!name) return;
-        exercises.push(name);
-        localStorage.setItem("exercises", JSON.stringify(exercises));
-        refreshExerciseSelect();
-    }
-
-    function refreshExerciseSelect(){
-        const sel = document.getElementById("exerciseSelect");
-        sel.innerHTML = "";
-        exercises.forEach(e=>{
-            const opt = document.createElement("option");
-            opt.value=e;
-            opt.textContent=e;
-            sel.appendChild(opt);
-        });
-        showPRList();
-    }
-
-    function refreshGraphSelect(){
-        const sel = document.getElementById("graphSelect");
-        sel.innerHTML = "";
-        exercises.forEach(e=>{
-            const opt = document.createElement("option");
-            opt.value=e;
-            opt.textContent=e;
-            sel.appendChild(opt);
-        });
-        drawGraph();
-    }
-
-    function savePR(){
-        const exercise = document.getElementById("exerciseSelect").value;
-        const weight = document.getElementById("weight").value;
-        const reps = document.getElementById("reps").value;
-        const date = document.getElementById("date").value;
-        if(!exercise || !weight || !reps || !date){ alert("Fill all fields!"); return;}
-        let prRecords = JSON.parse(localStorage.getItem("prRecords")||"[]");
-        prRecords.push({exercise, weight, reps, date});
-        localStorage.setItem("prRecords", JSON.stringify(prRecords));
-        document.getElementById("weight").value="";
-        document.getElementById("reps").value="";
-        document.getElementById("date").value="";
-        showPRList();
-    }
-
-    function showPRList(){
-        const listDiv=document.getElementById("entryList");
-        listDiv.innerHTML="";
-        const prRecords=JSON.parse(localStorage.getItem("prRecords")||"[]");
-        prRecords.forEach((r,i)=>{
-            const div=document.createElement("div");
-            div.className="pr-entry";
-            div.innerHTML=`${r.date} - ${r.exercise} - ${r.weight}kg x${r.reps} <span class="delete-btn" onclick="deletePR(${i})">&#128465;</span>`;
-            listDiv.appendChild(div);
-        });
-    }
-
-    function deletePR(i){
-        let prRecords=JSON.parse(localStorage.getItem("prRecords")||"[]");
-        prRecords.splice(i,1);
-        localStorage.setItem("prRecords", JSON.stringify(prRecords));
-        showPRList();
-    }
-
-    showPage("home");
-
-    // Kalendár
-    const calendarTable=document.getElementById("calendarTable");
-    const monthYear=document.getElementById("monthYear");
-    const today=new Date();
-    let currentMonth=today.getMonth();
-    let currentYear=today.getFullYear();
-    const months=["January","February","March","April","May","June","July","August","September","October","November","December"];
-
-    function generateCalendar(month,year){
-        calendarTable.innerHTML="";
-        monthYear.textContent=months[month]+" "+year;
-        const firstDay=new Date(year,month,1).getDay();
-        const daysInMonth=new Date(year,month+1,0).getDate();
-        let date=1;
-        let headerRow=document.createElement("tr");
-        ["Su","Mo","Tu","We","Th","Fr","Sa"].forEach(d=>{
-            let th=document.createElement("th");
-            th.textContent=d;
-            headerRow.appendChild(th);
-        });
-        calendarTable.appendChild(headerRow);
-        const prRecords=JSON.parse(localStorage.getItem("prRecords")||"[]");
-        for(let i=0;i<6;i++){
-            let row=document.createElement("tr");
-            for(let j=0;j<7;j++){
-                let cell=document.createElement("td");
-                if(i===0 && j<firstDay){ cell.textContent=""; }
-                else if(date>daysInMonth){ cell.textContent=""; }
-                else{
-                    cell.textContent=date;
-                    const dayStr=`${year}-${(month+1).toString().padStart(2,'0')}-${date.toString().padStart(2,'0')}`;
-                    prRecords.filter(r=>r.date===dayStr).forEach(r=>{
-                        const div=document.createElement("div");
-                        div.className="pr-calendar-entry";
-                        div.textContent=`${r.exercise}: ${r.weight}kg x${r.reps}`;
-                        cell.appendChild(div);
-                    });
-                    date++;
-                }
-                row.appendChild(cell);
-            }
-            calendarTable.appendChild(row);
+    <script>
+        // Menu toggle
+        function toggleMenu() {
+            const menu = document.getElementById("myMenu");
+            menu.style.display = (menu.style.display === "block") ? "none" : "block";
         }
-    }
 
-    function prevMonth(){ currentMonth--; if(currentMonth<0){currentMonth=11;currentYear--;} generateCalendar(currentMonth,currentYear);}
-    function nextMonth(){ currentMonth++; if(currentMonth>11){currentMonth=0;currentYear++;} generateCalendar(currentMonth,currentYear);}
+        function showPage(page) {
+            document.getElementById("home").style.display = (page === "home") ? "block" : "none";
+            document.getElementById("calendar").style.display = (page === "calendar") ? "block" : "none";
+            document.getElementById("myMenu").style.display = "none";
+            if(page === "calendar") {
+                generateCalendar(currentMonth, currentYear);
+            }
+        }
 
-    // Grafy
-    let chart;
-    function drawGraph(){
-        const exercise=document.getElementById("graphSelect").value;
-        const prRecords=JSON.parse(localStorage.getItem("prRecords")||"[]").filter(r=>r.exercise===exercise);
-        prRecords.sort((a,b)=>new Date(a.date)-new Date(b.date));
-        const labels=prRecords.map(r=>r.date);
-        const data=prRecords.map(r=>r.weight);
-        const ctx=document.getElementById("prGraph").getContext("2d");
-        if(chart) chart.destroy();
-        chart=new Chart(ctx,{
-            type:'line',
-            data:{
-                labels:labels,
-                datasets:[{
-                    label:exercise+' Weight',
-                    data:data,
+        // Exercises
+        function loadExercises() {
+            let exercises = JSON.parse(localStorage.getItem("exercises") || "[]");
+            const select = document.getElementById("exerciseSelect");
+            select.innerHTML = "";
+            exercises.forEach(e => {
+                let option = document.createElement("option");
+                option.value = e;
+                option.textContent = e;
+                option.style.color = "black";
+                select.appendChild(option);
+            });
+        }
+
+        function createExercise() {
+            const newExercise = document.getElementById("newExercise").value.trim();
+            if(!newExercise) return;
+            let exercises = JSON.parse(localStorage.getItem("exercises") || "[]");
+            if(!exercises.includes(newExercise)) {
+                exercises.push(newExercise);
+                localStorage.setItem("exercises", JSON.stringify(exercises));
+                document.getElementById("newExercise").value = "";
+                loadExercises();
+            }
+        }
+
+        // Save PR
+        function savePR() {
+            const weight = document.getElementById("weight").value;
+            const date = document.getElementById("date").value;
+            const reps = document.getElementById("reps").value;
+            const exercise = document.getElementById("exerciseSelect").value;
+
+            if(!weight || !date || !exercise || !reps) {
+                alert("Fill all fields!");
+                return;
+            }
+
+            let prRecords = JSON.parse(localStorage.getItem("prRecords") || "[]");
+            prRecords.push({weight, date, exercise, reps});
+            localStorage.setItem("prRecords", JSON.stringify(prRecords));
+
+            document.getElementById("weight").value = "";
+            document.getElementById("date").value = "";
+            document.getElementById("reps").value = "";
+
+            showPRList();
+        }
+
+        function showPRList() {
+            const listDiv = document.getElementById("entryList");
+            listDiv.innerHTML = "";
+            const prRecords = JSON.parse(localStorage.getItem("prRecords") || "[]");
+            prRecords.forEach((r,index) => {
+                const div = document.createElement("div");
+                div.className = "pr-entry";
+                div.innerHTML = `<span>${r.date} - ${r.exercise} - ${r.weight}kg x${r.reps}</span>
+                                 <span class="delete-btn" onclick="deletePR(${index})">&#128465;</span>`;
+                listDiv.appendChild(div);
+            });
+        }
+
+        function deletePR(index) {
+            let prRecords = JSON.parse(localStorage.getItem("prRecords") || "[]");
+            prRecords.splice(index,1);
+            localStorage.setItem("prRecords", JSON.stringify(prRecords));
+            showPRList();
+        }
+
+        loadExercises();
+        showPRList();
+
+        // Calendar
+        const calendarTable = document.getElementById("calendarTable");
+        const monthYear = document.getElementById("monthYear");
+        const today = new Date();
+        let currentMonth = today.getMonth();
+        let currentYear = today.getFullYear();
+
+        const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+        function generateCalendar(month, year) {
+            calendarTable.innerHTML = "";
+            monthYear.textContent = months[month] + " " + year;
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            let date = 1;
+            const daysOfWeek = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+            let headerRow = document.createElement("tr");
+            daysOfWeek.forEach(d => {
+                let th = document.createElement("th");
+                th.textContent = d;
+                headerRow.appendChild(th);
+            });
+            calendarTable.appendChild(headerRow);
+
+            const prRecords = JSON.parse(localStorage.getItem("prRecords") || "[]");
+
+            for(let i=0;i<6;i++){
+                let row = document.createElement("tr");
+                for(let j=0;j<7;j++){
+                    let cell = document.createElement("td");
+                    if(i===0 && j<firstDay){
+                        cell.textContent = "";
+                    } else if(date>daysInMonth){
+                        cell.textContent = "";
+                    } else {
+                        cell.textContent = date;
+                        const dayStr = `${year}-${(month+1).toString().padStart(2,'0')}-${date.toString().padStart(2,'0')}`;
+                        prRecords.filter(r=>r.date===dayStr).forEach(r=>{
+                            const div = document.createElement("div");
+                            div.className = "pr-calendar-entry";
+                            div.textContent = `${r.exercise}: ${r.weight}kg x${r.reps}`;
+                            cell.appendChild(div);
+                        });
+                        date++;
+                    }
+                    row.appendChild(cell);
+                }
+                calendarTable.appendChild(row);
+            }
+        }
+
+        function prevMonth() {
+            currentMonth--;
+            if(currentMonth<0){
+                currentMonth=11;
+                currentYear--;
+            }
+            generateCalendar(currentMonth,currentYear);
+        }
+
+        function nextMonth() {
+            currentMonth++;
+            if(currentMonth>11){
+                currentMonth=0;
+                currentYear++;
+            }
+            generateCalendar(currentMonth,currentYear);
+        }
+
+        // Graph
+        function showGraph() {
+            document.getElementById("graphModal").style.display="block";
+            const ctx = document.getElementById('prChart').getContext('2d');
+            const prRecords = JSON.parse(localStorage.getItem("prRecords") || "[]");
+            const exercises = [...new Set(prRecords.map(r=>r.exercise))];
+            const datasets = exercises.map(ex=>{
+                return {
+                    label: ex,
+                    data: prRecords.filter(r=>r.exercise===ex).map(r=>({x:r.date, y:r.weight})),
+                    borderColor: 'white',
+                    backgroundColor: 'rgba(255,255,255,0.2)',
                     fill:false,
-                    borderColor:'white',
-                    tension:0.1
-                }]
-            },
-            options:{
-                scales:{
-                    x:{ ticks:{color:'white'}},
-                    y:{ ticks:{color:'white'} }
+                    tension:0
+                };
+            });
+
+            if(window.chartInstance) window.chartInstance.destroy();
+            window.chartInstance = new Chart(ctx,{
+                type:'line',
+                data:{
+                    datasets: datasets
                 },
-                plugins:{
-                    legend:{labels:{color:'white'}}
+                options:{
+                    parsing:{
+                        xAxisKey:'x',
+                        yAxisKey:'y'
+                    },
+                    scales:{
+                        x:{
+                            type:'time',
+                            time:{unit:'day'},
+                            ticks:{color:'white'}
+                        },
+                        y:{ticks:{color:'white'}}
+                    },
+                    plugins:{
+                        legend:{labels:{color:'white'}}
+                    }
                 }
-            }
-        });
-    }
-
-    refreshExerciseSelect();
-</script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Exercise Graph</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #1e1e1e;
-        color: white;
-        padding: 20px;
-    }
-    canvas {
-        background-color: rgba(255, 255, 255, 0.1);
-        border-radius: 10px;
-        margin-top: 20px;
-    }
-</style>
-</head>
-<body>
-<h2>Exercise Graph</h2>
-
-<label for="exercise">Select Exercise:</label>
-<select id="exercise">
-    <option value="bench">Bench Press</option>
-    <option value="squat">Squat</option>
-    <option value="deadlift">Deadlift</option>
-</select>
-
-<canvas id="exerciseChart" width="600" height="400"></canvas>
-
-<script>
-const exerciseData = {
-    bench: [
-        {date: '2025-11-01', weight: 60},
-        {date: '2025-11-05', weight: 65},
-        {date: '2025-11-10', weight: 70},
-    ],
-    squat: [
-        {date: '2025-11-02', weight: 80},
-        {date: '2025-11-06', weight: 85},
-        {date: '2025-11-11', weight: 90},
-    ],
-    deadlift: [
-        {date: '2025-11-03', weight: 100},
-        {date: '2025-11-07', weight: 110},
-        {date: '2025-11-12', weight: 115},
-    ]
-};
-
-const ctx = document.getElementById('exerciseChart').getContext('2d');
-
-let chart;
-
-function updateChart(exercise) {
-    const data = exerciseData[exercise];
-    const labels = data.map(d => d.date);
-    const weights = data.map(d => d.weight);
-
-    if(chart) chart.destroy(); // odstráni starý graf
-
-    chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: exercise + ' weight (kg)',
-                data: weights,
-                borderColor: 'white',
-                backgroundColor: 'rgba(255,255,255,0.2)',
-                tension: 0.2
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: { color: 'white' }
-                },
-                x: { ticks: { color: 'white' } }
-            },
-            plugins: { legend: { labels: { color: 'white' } } }
+            });
         }
-    });
-}
 
-// prvý graf
-updateChart('bench');
+        function closeGraph() {
+            document.getElementById("graphModal").style.display="none";
+        }
 
-// zmena cviku
-document.getElementById('exercise').addEventListener('change', e => {
-    updateChart(e.target.value);
-});
-</script>
+    </script>
 </body>
 </html>
-
