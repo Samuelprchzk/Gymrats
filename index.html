@@ -21,10 +21,11 @@
             text-shadow: 2px 2px 4px #000;
         }
 
+        /* MENU V ĽAVOM HORNOM ROHU */
         .menu {
-            position: relative;
-            display: inline-block;
-            margin-bottom: 20px;
+            position: absolute;
+            top: 10px;
+            left: 10px;
         }
 
         .menu-button {
@@ -144,7 +145,6 @@
             align-items: center;
         }
 
-        /* Graf modal */
         .modal {
             display: none;
             position: fixed;
@@ -234,7 +234,6 @@
         <table id="calendarTable"></table>
     </div>
 
-    <!-- Graph Modal -->
     <div id="graphModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeGraph()">&times;</span>
@@ -246,7 +245,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-        // Menu toggle
+
         function toggleMenu() {
             const menu = document.getElementById("myMenu");
             menu.style.display = (menu.style.display === "block") ? "none" : "block";
@@ -261,11 +260,21 @@
             }
         }
 
-        // Exercises
+        /* DEFAULT CVIKY */
         function loadExercises() {
+            const defaultExercises = ["SQUAT", "BENCH PRESS", "DEADLIFT"];
+
             let exercises = JSON.parse(localStorage.getItem("exercises") || "[]");
+
+            defaultExercises.forEach(ex => {
+                if (!exercises.includes(ex)) exercises.push(ex);
+            });
+
+            localStorage.setItem("exercises", JSON.stringify(exercises));
+
             const select = document.getElementById("exerciseSelect");
             select.innerHTML = "";
+
             exercises.forEach(e => {
                 let option = document.createElement("option");
                 option.value = e;
@@ -278,7 +287,9 @@
         function createExercise() {
             const newExercise = document.getElementById("newExercise").value.trim();
             if(!newExercise) return;
+
             let exercises = JSON.parse(localStorage.getItem("exercises") || "[]");
+
             if(!exercises.includes(newExercise)) {
                 exercises.push(newExercise);
                 localStorage.setItem("exercises", JSON.stringify(exercises));
@@ -287,11 +298,15 @@
             }
         }
 
-        // Save PR
+        /* AUTOMATICKÝ VÝPOČET 1RM */
+        function calculate1RM(weight, reps) {
+            return Math.round(weight * (1 + reps / 30) * 10) / 10;
+        }
+
         function savePR() {
-            const weight = document.getElementById("weight").value;
+            const weight = Number(document.getElementById("weight").value);
             const date = document.getElementById("date").value;
-            const reps = document.getElementById("reps").value;
+            const reps = Number(document.getElementById("reps").value);
             const exercise = document.getElementById("exerciseSelect").value;
 
             if(!weight || !date || !exercise || !reps) {
@@ -299,8 +314,10 @@
                 return;
             }
 
+            const oneRM = calculate1RM(weight, reps);
+
             let prRecords = JSON.parse(localStorage.getItem("prRecords") || "[]");
-            prRecords.push({weight, date, exercise, reps});
+            prRecords.push({weight, date, exercise, reps, oneRM});
             localStorage.setItem("prRecords", JSON.stringify(prRecords));
 
             document.getElementById("weight").value = "";
@@ -314,10 +331,11 @@
             const listDiv = document.getElementById("entryList");
             listDiv.innerHTML = "";
             const prRecords = JSON.parse(localStorage.getItem("prRecords") || "[]");
+
             prRecords.forEach((r,index) => {
                 const div = document.createElement("div");
                 div.className = "pr-entry";
-                div.innerHTML = `<span>${r.date} - ${r.exercise} - ${r.weight}kg x${r.reps}</span>
+                div.innerHTML = `<span>${r.date} - ${r.exercise} - ${r.weight}kg x${r.reps} (1RM: ${r.oneRM}kg)</span>
                                  <span class="delete-btn" onclick="deletePR(${index})">&#128465;</span>`;
                 listDiv.appendChild(div);
             });
@@ -333,7 +351,6 @@
         loadExercises();
         showPRList();
 
-        // Calendar
         const calendarTable = document.getElementById("calendarTable");
         const monthYear = document.getElementById("monthYear");
         const today = new Date();
@@ -352,6 +369,7 @@
             let date = 1;
             const daysOfWeek = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
             let headerRow = document.createElement("tr");
+
             daysOfWeek.forEach(d => {
                 let th = document.createElement("th");
                 th.textContent = d;
@@ -365,19 +383,23 @@
                 let row = document.createElement("tr");
                 for(let j=0;j<7;j++){
                     let cell = document.createElement("td");
+
                     if(i===0 && j<firstDay){
                         cell.textContent = "";
                     } else if(date>daysInMonth){
                         cell.textContent = "";
                     } else {
                         cell.textContent = date;
+
                         const dayStr = `${year}-${(month+1).toString().padStart(2,'0')}-${date.toString().padStart(2,'0')}`;
+
                         prRecords.filter(r=>r.date===dayStr).forEach(r=>{
                             const div = document.createElement("div");
                             div.className = "pr-calendar-entry";
-                            div.textContent = `${r.exercise}: ${r.weight}kg x${r.reps}`;
+                            div.textContent = `${r.exercise}: ${r.weight}kg x${r.reps} (1RM: ${r.oneRM})`;
                             cell.appendChild(div);
                         });
+
                         date++;
                     }
                     row.appendChild(cell);
@@ -404,16 +426,17 @@
             generateCalendar(currentMonth,currentYear);
         }
 
-        // Graph
         function showGraph() {
             document.getElementById("graphModal").style.display="block";
             const ctx = document.getElementById('prChart').getContext('2d');
             const prRecords = JSON.parse(localStorage.getItem("prRecords") || "[]");
+
             const exercises = [...new Set(prRecords.map(r=>r.exercise))];
+
             const datasets = exercises.map(ex=>{
                 return {
                     label: ex,
-                    data: prRecords.filter(r=>r.exercise===ex).map(r=>({x:r.date, y:r.weight})),
+                    data: prRecords.filter(r=>r.exercise===ex).map(r=>({x:r.date, y:r.oneRM})),
                     borderColor: 'white',
                     backgroundColor: 'rgba(255,255,255,0.2)',
                     fill:false,
@@ -422,16 +445,12 @@
             });
 
             if(window.chartInstance) window.chartInstance.destroy();
+
             window.chartInstance = new Chart(ctx,{
                 type:'line',
-                data:{
-                    datasets: datasets
-                },
+                data:{ datasets: datasets },
                 options:{
-                    parsing:{
-                        xAxisKey:'x',
-                        yAxisKey:'y'
-                    },
+                    parsing:{ xAxisKey:'x', yAxisKey:'y' },
                     scales:{
                         x:{
                             type:'time',
