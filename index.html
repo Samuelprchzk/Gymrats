@@ -386,3 +386,101 @@
 </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Exercise Graph</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #1e1e1e;
+        color: white;
+        padding: 20px;
+    }
+    canvas {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        margin-top: 20px;
+    }
+</style>
+</head>
+<body>
+<h2>Exercise Graph</h2>
+
+<label for="exercise">Select Exercise:</label>
+<select id="exercise">
+    <option value="bench">Bench Press</option>
+    <option value="squat">Squat</option>
+    <option value="deadlift">Deadlift</option>
+</select>
+
+<canvas id="exerciseChart" width="600" height="400"></canvas>
+
+<script>
+const exerciseData = {
+    bench: [
+        {date: '2025-11-01', weight: 60},
+        {date: '2025-11-05', weight: 65},
+        {date: '2025-11-10', weight: 70},
+    ],
+    squat: [
+        {date: '2025-11-02', weight: 80},
+        {date: '2025-11-06', weight: 85},
+        {date: '2025-11-11', weight: 90},
+    ],
+    deadlift: [
+        {date: '2025-11-03', weight: 100},
+        {date: '2025-11-07', weight: 110},
+        {date: '2025-11-12', weight: 115},
+    ]
+};
+
+const ctx = document.getElementById('exerciseChart').getContext('2d');
+
+let chart;
+
+function updateChart(exercise) {
+    const data = exerciseData[exercise];
+    const labels = data.map(d => d.date);
+    const weights = data.map(d => d.weight);
+
+    if(chart) chart.destroy(); // odstráni starý graf
+
+    chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: exercise + ' weight (kg)',
+                data: weights,
+                borderColor: 'white',
+                backgroundColor: 'rgba(255,255,255,0.2)',
+                tension: 0.2
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { color: 'white' }
+                },
+                x: { ticks: { color: 'white' } }
+            },
+            plugins: { legend: { labels: { color: 'white' } } }
+        }
+    });
+}
+
+// prvý graf
+updateChart('bench');
+
+// zmena cviku
+document.getElementById('exercise').addEventListener('change', e => {
+    updateChart(e.target.value);
+});
+</script>
+</body>
+</html>
+
